@@ -73,7 +73,48 @@ class stack_array_implementation(object):#stack overflow when N>capcity,using ca
     def pop(self,n):
         del self.arr[self.n-1]
         self.n-=1
-    
+
+
+class resize_array(object):
+    def __init__(self,arr):
+        self.arr=arr
+        self.N=len([i for i in arr if i!= None])
+        self.capcity=len(arr)
+    def push(self,a):
+        self.capcity=len(self.arr)
+        self.N=len([s for s in self.arr if s!= None])
+        if self.N==self.capcity:
+            for i in range(self.N):
+                if i==0:
+                    self.arr.append(a)
+                else:
+                    self.arr.append(None)
+        else:
+           self.arr[self.N]=a
+        self.capcity=len(self.arr)
+        self.N=len([s for s in self.arr if s!= None])
+    def pop(self,a):
+        if self.N==len(self.arr)/4:
+            self.arr=self.arr[:(len(self.arr))/2]
+            self.arr.pop(a)
+        else:
+            self.arr.pop(a)
+            
+            
+
+
+     
+            
+            
+            
+            
+            
+            
+            
+
+
+            
+        
 
 
 
