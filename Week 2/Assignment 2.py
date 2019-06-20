@@ -65,7 +65,7 @@ def permutation(k,stri):
             ks_unique.append(item)
             i+=1
             print(item)
-permutation(3,["A","D","D","l","How","Yes","A"])
+permutation(3,["d","a","D","l","How","Yes","A"])
 
 
 
