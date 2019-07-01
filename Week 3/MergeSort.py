@@ -6,7 +6,35 @@ Created on Tue Jun 25 15:44:38 2019
 """
 
 # Python program for implementation of MergeSort 
-
+def bottom_up_mergesort(list): 
+    if len(list) < 2: 
+        return list
+  
+    middle = int(len(list)/2)
+    left = mergesort(list[:middle]) 
+    right = mergesort(list[middle:]) 
+  
+    return bottom_up_merge(left, right)
+def bottom_up_merge(left, right): 
+    if not len(left) or not len(right): 
+        return left or right 
+  
+    result = [] 
+    i, j = 0, 0
+    while (len(result) < len(left) + len(right)): 
+        if left[i] < right[j]: 
+            result.append(left[i]) 
+            i+= 1
+        else: 
+            result.append(right[j]) 
+            j+= 1
+        if i == len(left) or j == len(right): 
+            result.extend(left[i:] or right[j:]) 
+            break 
+  
+    return result 
+  
+print(bottom_up_mergesort([15, 4, 11, 1,231,13123,134,13,-132,3123,44444,3123]))
 cut_off=7
 def mergesort(arr):##optimized method with cutoff for insertion sort and tweaks for already sorted arrays
     if len(arr)<=1:
