@@ -4,7 +4,7 @@ Created on Thu Jun 27 16:51:02 2019
 
 @author: MMOHTASHIM
 """
-from itertools import combinations
+from itertools import combinations,groupby
 import matplotlib.pyplot as plt
 import time
 import math
@@ -62,54 +62,31 @@ def BruteCollinearPoints(lists):
 def FastCollinearPoints(lists):
     time_start=time.time()
     line_segment=[]
-    result=[]
     for orgin in lists:
         segment=[]
-        segment.append((None,(orgin.point[0],orgin.point[1])))
+        segment.append((orgin.point[0],orgin.point[1]))
         gradients=[]
         for q in lists:
             if q!=orgin:
                 grad=orgin.slopTo(q.point[0],q.point[1])
-                gradients.append([grad,(q.point[0],q.point[1])])
+                gradients.append((grad,q.point[0],q.point[1]))
         gradients=sorted(gradients)
-        s=0
-        for grad in gradients:
-            if s==0:
-                segment.append((grad[0],grad[1]))
-                prev_grad=grad
-                s+=1
-            elif prev_grad[0]==grad[0] and prev_grad[1] not in segment and segment[-1][0]==grad[0]:
-                segment.append((grad[0],grad[1]))
-                segment.append((grad[0],prev_grad[1]))
-            elif prev_grad[0]==grad[0] and segment[-1][0]==grad[0]:
-                 segment.append((grad[0],grad[1]))
-            else:
-                if len(segment)>=3:
-                    line_segment.append(list(set(segment)))
-                    segment=[]
-                    segment.append((grad[0],grad[1]))
-                else:
-                    segment=[]
-                    segment.append((grad[0],grad[1]))
-            prev_grad=grad
-    for i in line_segment:
-        draw=[]
-        for k in i:
-            draw.append(k[1])
-            draw=sorted(draw)
-        if len(draw)>=4:
-            result.append(draw)
-    print(result)
-    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-    s=0
-    final_result=[]
-    for draw in result:
-            if draw not in final_result:
-                final_result.append(draw)
-           
-            
+        groups=[]
+        uniquekeys=[]
+        for k, g in groupby(gradients,lambda x:x[0]):
+            groups.append(list(g))      # Store group iterator as a list
+            uniquekeys.append(k)
+        for i in groups:
+            if len(i)>=3:
+                for k in i:
+                    segment.append((k[-2],k[-1]))
+                
+        segment=sorted(segment)
+        if segment not in line_segment:
+            line_segment.append(segment)
+                       
     time_end=time.time()
-    return final_result,(time_end-time_start)
+    return line_segment,(time_end-time_start)
                 
             
             
@@ -121,20 +98,11 @@ if __name__=='__main__':
     l=Point(2,6)
     m=Point(3,9)
     x=Point(4,12)
-    a=Point(1,1)
-    b=Point(2,2)
-    c=Point(3,3)
-    d=Point(4,4)
-    q=Point(1,4)
-    w=Point(2,8)
-    e=Point(3,12)
-    r=Point(4,16)
-    t=Point(5,20)
-    y=Point(6,24)
-    u=Point(1,5)
-    i=Point(4,4)
     
-    FCP,times=FastCollinearPoints([k,l,m,x,a,b,c,d,q,w,e,r,t,y,u,i])
+
+
+    
+    FCP,times=FastCollinearPoints([k,l,m,x])
     print("The output of FastCollinearPoints Algorithm is {} and time taken is {}".format(FCP,times))
-    BCP,times= BruteCollinearPoints([k,l,m,x,a,b,c,d,q,w,e,r,t,y,u,i])
+    BCP,times= BruteCollinearPoints([k,l,m,x])
     print("The output of BruteCollinearPoints Algorithm is {} and time taken is {}".format(BCP,times))
