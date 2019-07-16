@@ -10,10 +10,7 @@ import random
 #alpha stage
 class Board(object):
     def __init__(self,board,n):
-        for i in range(n*n):
-            board.append(i)
-        self.board=random.sample(board, len(board))   
-#        self.board=[1,3,0,4,8,2,7,6,5]
+        self.board=board
         self.n=n
     def toString(self):
         print(self.n)
@@ -35,6 +32,11 @@ class Board(object):
         return abs((len(self.board)-1)-non_hamming)
     def manhattan(self):
         manhattan=0
+        global goal_board
+        goal_board=[]
+        for i in range(1,self.n*self.n):
+            goal_board.append(i)
+        goal_board.append(0)
         for a in self.board:
             if a!=0:
                 if a==self.board.index(a)+1:
@@ -65,6 +67,7 @@ class Board(object):
                 
         return manhattan
     def neighbors(self):
+         neighbors=[]
          index=self.board.index(0)
          if index>0 and index<self.n:
             print(index)
@@ -119,6 +122,7 @@ class Board(object):
                     print("State {}".format(s))
                     for ii in range(1,self.n+1):
                         print(board_copy[self.n*(ii-1):self.n*(ii)])
+                neighbors.append(board_copy)
                     
                     
          elif index>=((len(self.board)-1)-(self.n-1)) and index<len(self.board)-1:
@@ -175,6 +179,8 @@ class Board(object):
                     print("State {}".format(s))
                     for ii in range(1,self.n+1):
                         print(board_copy[self.n*(ii-1):self.n*(ii)])
+                        
+                neighbors.append(board_copy)
          elif index==0:
             print(index)
             right=self.board[index+1]
@@ -211,6 +217,9 @@ class Board(object):
                     print("State {}".format(s))
                     for ii in range(1,self.n+1):
                         print(board_copy[self.n*(ii-1):self.n*(ii)])
+                neighbors.append(board_copy)
+                
+                
          elif index==len(self.board)-1:
             print(index)
             
@@ -247,6 +256,7 @@ class Board(object):
                     print("State {}".format(s))
                     for ii in range(1,self.n+1):
                         print(board_copy[self.n*(ii-1):self.n*(ii)])
+                neighbors.append(board_copy)
         
          else:
             print(index)
@@ -268,8 +278,8 @@ class Board(object):
             except IndexError:
                 states_pos=[left,up,down]
             
-            states_pos=[left,right,up,down]
             s=0
+            states_pos=[left,right,up,down]
             for i in states_pos:
                 s+=1
                 if i==left:
@@ -310,14 +320,67 @@ class Board(object):
                     print("State {}".format(s))
                     for ii in range(1,self.n+1):
                         print(board_copy[self.n*(ii-1):self.n*(ii)])
+                neighbors.append(board_copy)
+         return neighbors
+
+class AI(object):
+    def __init__(self):
+        self.moves=0
+    def Solver(self,board):
+        game_on=True
+        n=board.n
+        ##intialize the solver
+        goalies_board=[i for i in range(1,n*n)]
+        goalies_board.append(0)
+        neighbors=board.neighbors()
+        self.moves+=1
+        while game_on==True:
+            que=[]
+            print("#############################################################################################")
+            for i in neighbors:
+                i=Board(i,n)
+                que.append((i,self.moves,i.manhattan(),self.moves+i.manhattan(),self.moves+i.hamming()))
+                if i.board==goalies_board:
+                    game_on=False
+                    print("The solution reached in {} moves".format(self.moves) ,"and the solution is",i.board)
+            min_pq=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            min_pq_tie=10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            for i in que:
+                if i[3]<min_pq:
+                    min_pq=i[3]
+                    del_board=i
+                elif i[3]==min_pq:
+                    if i[4]<min_pq_tie:
+                        min_pq_tie=i[4]
+                        del_board=i
+                    
+            neighbors=del_board[0].neighbors()
+            que.remove(del_board)
+            self.moves+=1
+            
+            
+                
+                
+                
+                    
+        
+        
+        
+            
+                
                 
 
         
        
-   
-board=Board([],6)
-board.toString()
-board.neighbors()
+if __name__=="__main__": 
+    n=3
+    puzzle=[0,1,3,4,2,5,7,8,6]
+    board=Board(puzzle,n)
+    board.toString()
+    solve=AI()
+    solve.Solver(board)
+    
 
 
 
