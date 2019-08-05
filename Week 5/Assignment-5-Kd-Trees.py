@@ -50,12 +50,13 @@ class RectHV(object):
     def ymax(self):
         return self.ymax
     def contains(self,point):
-        if point.x>=self.xmin and point.x<=self.xmax:
-            if point.y>=self.ymin and point.y<=self.ymax:
+        if self.xmin <= point.x <= self.xmax:
+            if self.ymin <= point.y <= self.ymax:
                 return True
             else:
                 return False
         else:
+            print("yes")
             return False
     def intersects(self,Rect):
         points=[point2d(Rect.xmin,Rect.ymin),point2d(Rect.xmax,Rect.ymin),point2d(Rect.xmin,Rect.ymax),point2d(Rect.xmax,Rect.ymax)]
@@ -85,7 +86,33 @@ class RectHV(object):
         else:
             return False
         
-    
+class Pointset(object):
+    def __init__(self):
+        self.set=[]
+    def isEmpty(self):
+        return self.set==[]
+    def size(self):
+        return len(self.set)
+    def insert(self,point):
+        if point not in self.set:
+            self.set.append(point)
+        else:
+            print("The Point is already present")
+    def contains(self,point):
+        if point in self.set:
+            return True
+    def range(self,rect):
+        result=[]
+        for i in self.set:
+            if rect.contains(i):
+                result.append((i.x,i.y))
+        return result
+    def nearest(self,p):
+        result=[]
+        for i in self.set:
+            result.append(p.distanceto(i))
+        return min(result)
+        
     
     
     
@@ -103,7 +130,15 @@ class RectHV(object):
     
 if '__main__' == __name__:
     point=point2d(0.7,0.4)
+    point1=point2d(0.8,0.2)
+    point2=point2d(0.7,0.4)
     rect=RectHV(0.7,0.9,0.1,0.3)
-    rect1=RectHV(0.7,0.9,0.1,0.3)
-
+    setpoint=Pointset()
+    setpoint.insert(point)
+    setpoint.insert(point1)
+    setpoint.insert(point2)
+    print(setpoint.range(rect))
+    print(setpoint.nearest(point2d(0.3,0.1)))
+    
+    
             
